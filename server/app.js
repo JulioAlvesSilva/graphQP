@@ -1,6 +1,6 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import conectaNaDatabase from './conexaodb.js';
+import conectaNaDatabase from './conectDB.js';
 import typeDefs from './schemas/clienteSchema.js';
 import resolvers from './resolvers/clienteResolver.js';
 import cors from 'cors';
