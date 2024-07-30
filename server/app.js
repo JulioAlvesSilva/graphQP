@@ -1,28 +1,34 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import conectaNaDatabase from './conectDB.js';
-
+import conectaNaDatabase from './conexaodb.js';
 import typeDefs from './schemas/clienteSchema.js';
 import resolvers from './resolvers/clienteResolver.js';
-
-const app = express();
+import cors from 'cors';
 
 const startServer = async () => {
-    // Conectar ao banco de dados
-    await conectaNaDatabase();
+  // Conectar ao banco de dados
+  await conectaNaDatabase();
 
-    // Criar e configurar o Apollo Server
-    const server = new ApolloServer({ typeDefs, resolvers });
-    await server.start();
-    server.applyMiddleware({ app });
+  // Criar o servidor Apollo
+  const server = new ApolloServer({ typeDefs, resolvers });
 
-    // Iniciar o servidor Express
-    app.listen({ port: 4000 }, () =>
-        console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
-    );
+  // Iniciar o servidor Apollo
+  await server.start();
+
+  const app = express();
+
+  app.use(cors());
+  app.use(express.json());
+
+  app.get('/', (req, res) => {
+    res.send('Bem-vindo ao servidor GraphQL');
+  });
+
+  server.applyMiddleware({ app });
+
+  app.listen({ port: 4000 }, () =>
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+  );
 };
 
-// Chamar a função para iniciar o servidor
 startServer();
